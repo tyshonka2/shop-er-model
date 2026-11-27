@@ -183,3 +183,83 @@
 **1-2.** Додаю більше зв'язків
 **3.** Додаю виняток про `unit_price` в критерії
 **4-8.** Виправляю намір, орфографічні помилки
+
+
+## Prompt 3 — ER model generation
+
+**Мій запит:**
+> Побудуй ER-модель у Mermaid `erDiagram` строго за цим spec.md.
+> Не додавай сутностей, атрибутів чи зв'язків, яких немає в spec.
+> Якщо щось у spec неоднозначне — не вигадуй, а напиши питання
+> окремим списком.
+>
+> (фінальний текст spec.md)
+
+**Відповідь AI:**
+
+ER-модель за spec.md (збережено в `model/er.mmd`):
+
+```mermaid
+erDiagram
+    CUSTOMER {
+        int id PK
+        string name
+        string phone_number
+    }
+    EMPLOYEE {
+        int id PK
+        string name
+        string job_title
+    }
+    PRODUCT {
+        int id PK
+        string name
+        decimal price
+    }
+    RESERVATION {
+        int id PK
+        datetime created_at
+        datetime expires_at
+        string status "accepted | cancelled | expired | picked_up"
+    }
+    RESERVATION_ITEM {
+        int id PK
+        int quantity
+        decimal unit_price
+    }
+    PICKUP_POINT {
+        int id PK
+        string name
+        string address
+        string working_hours
+    }
+    STOCK {
+        int id PK
+        int quantity
+    }
+
+    CUSTOMER     ||--o{ RESERVATION      : makes
+    PICKUP_POINT ||--o{ RESERVATION      : "is picked up at"
+    RESERVATION  ||--|{ RESERVATION_ITEM : contains
+    PRODUCT      ||--o{ RESERVATION_ITEM : "is reserved as"
+    PICKUP_POINT ||--o{ EMPLOYEE         : employs
+    PRODUCT      ||--o{ STOCK            : "is stocked as"
+    PICKUP_POINT ||--o{ STOCK            : holds
+```
+
+**Питання й місця, де AI вирішив замість spec:**
+
+1. **Англійські назви сутностей** у spec не задані — AI обрав
+   `CUSTOMER`, `EMPLOYEE`, `PRODUCT`, `RESERVATION`, `RESERVATION_ITEM`,
+   `PICKUP_POINT`, `STOCK`.
+2. **Атрибут `id`** відсутній у переліку атрибутів spec (є лише
+   в критеріях) — AI додав `int id PK` у кожну сутність.
+3. **Типи атрибутів** у spec не вказані — AI обрав `string`,
+   `decimal` (ціни), `datetime` (дати), `int` (кількість).
+4. **`working_hours` як `string`** — чи достатньо одного рядка?
+5. **Унікальність залишку** — чи може бути два `STOCK` для однієї
+   пари товар + точка? Не зафіксовано в spec.
+6. **Зовнішні ключі** не додані — зв'язки показані лініями.
+
+### Мої рішення
+(заповню після аудиту)

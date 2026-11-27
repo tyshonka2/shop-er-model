@@ -1,0 +1,45 @@
+erDiagram
+    CUSTOMER {
+        int id PK
+        string name
+        string phone_number
+    }
+    EMPLOYEE {
+        int id PK
+        string name
+        string job_title
+    }
+    PRODUCT {
+        int id PK
+        string name
+        decimal price
+    }
+    RESERVATION {
+        int id PK
+        datetime created_at
+        datetime expires_at
+        string status "accepted | cancelled | expired | picked_up"
+    }
+    RESERVATION_ITEM {
+        int id PK
+        int quantity
+        decimal unit_price
+    }
+    PICKUP_POINT {
+        int id PK
+        string name
+        string address
+        string working_hours
+    }
+    STOCK {
+        int id PK
+        int quantity
+    }
+
+    CUSTOMER     ||--o{ RESERVATION      : makes
+    PICKUP_POINT ||--o{ RESERVATION      : "is picked up at"
+    RESERVATION  ||--|{ RESERVATION_ITEM : contains
+    PRODUCT      ||--o{ RESERVATION_ITEM : "is reserved as"
+    PICKUP_POINT ||--o{ EMPLOYEE         : employs
+    PRODUCT      ||--o{ STOCK            : "is stocked as"
+    PICKUP_POINT ||--o{ STOCK            : holds
